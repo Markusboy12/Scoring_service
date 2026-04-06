@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import recall_score, precision_score
 
-data = pd.read_csv('data\scoring.csv')
+data = pd.read_csv('/workspaces/Scoring_service/data/scoring.csv')
 X = data.drop(columns=['default']).values
 y = data['default'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
@@ -20,4 +20,4 @@ print(f"Отказано: {y_pred.mean() * 100:.0f}%")
 print(f"Точность: {precision * 100:.0f}%")
 print(f"Полнота:  {recall * 100:.0f}%")
 
-joblib.dump(model, "model.pkl")
+joblib.dump(model, "model.pkl") # trained model save
