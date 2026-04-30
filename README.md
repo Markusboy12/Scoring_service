@@ -1,48 +1,122 @@
-# 🏦 Credit Scoring System with Logistic Regression & Streamlit
- Описание проекта
+```markdown
+# 🏦 Credit Scoring Service
 
-Проект представляет собой систему кредитного скоринга, которая оценивает вероятность дефолта заемщика на основе его финансовых и демографических данных. Модель построена на алгоритме Логистической регрессии, а пользовательский интерфейс реализован с помощью фреймворка Streamlit.
+A microservice-based credit scoring system that evaluates loan eligibility using a Logistic Regression model. The project consists of a **FastAPI** backend for model inference and a **Streamlit** frontend for user interaction.
 
-Цель данного проекта — создать легкий и интерактивный инструмент для предварительной оценки кредитоспособности клиентов. Система принимает на вход данные пользователя (возраст, доход, и т.д.) и выдает прогноз: одобрен кредит или нет, то предлагает другой вариант кредита.
+## 📋 Project Overview
 
-Основные задачи:
-1. Проведение разведочного анализа данных (EDA).
-2. Предобработка данных и Feature Engineering.
-3. Обучение модели логистической регрессии.
-4. Оценка качества модели.
-5. Деплой модели в виде веб-приложения на Streamlit.
+This application predicts the probability of borrower default based on financial and demographic data.
+- **Backend**: A FastAPI server loads a pre-trained Logistic Regression model and exposes a `/score` endpoint.
+- **Frontend**: A Streamlit interface allows users to input their details (age, income, education, etc.) and receive an instant decision.
+- **Model**: Trained on historical banking data with balanced class weights to handle imbalanced datasets.
 
-## 🛠 Стек технологий
+## 🛠 Tech Stack
 
-- **Python 3.12**
-- **Pandas **: Для обработки и анализа данных.
-- **Scikit-Learn**: Для построения модели логистической регрессии, масштабирования признаков и оценки метрик.
-- **Streamlit**: Для создания интерактивного веб-интерфейса.
-- **Joblib / Pickle**: Для сохранения и загрузки обученной модели.
+*   **Python 3.12**
+*   **FastAPI**: High-performance web framework for building APIs.
+*   **Streamlit**: For creating the interactive web UI.
+*   **Scikit-Learn**: For the Logistic Regression model and data preprocessing.
+*   **Pandas**: For data manipulation.
+*   **Joblib**: For model serialization.
+*   **Pydantic**: For data validation in the API.
 
+## 📂 Project Structure
 
-### Клонируйте репозиторий
+```text
+Scoring_service/
+├── data/
+│   └── scoring.csv          # Training dataset
+├── other files/             # Additional resources
+├── app_front.py             # Streamlit frontend application
+├── main.py                  # Model training and evaluation script
+├── server.py                # FastAPI backend server
+├── model.pkl                # Serialized trained model
+├── requirements.txt         # (Optional) List of dependencies
+└── README.md
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have Python 3.12+ installed. Install the required libraries:
 
 ```bash
-git clone https://github.com/your-username/credit-scoring-streamlit.git
-cd credit-scoring-streamlit
+pip install fastapi uvicorn streamlit scikit-learn pandas pydantic requests joblib
+```
 
+### 1. Train the Model (Optional)
 
+If you want to retrain the model or evaluate metrics, run `main.py`:
 
+```bash
+python main.py
+```
+This will generate/update the `model.pkl` file.
 
-💻 Использование приложения
-1. Запустите приложение командой streamlit run app.py.
-2. В боковой панели или основной части экрана введите данные заемщика:
-Возраст
-Годовой доход
-Количество детей
-Наличие недвижимости/автомобиля
-История предыдущих кредитов и т.д.
-Нажмите кнопку "Рассчитать скоринг".
-Приложение отобразит:
-Вердикт: Кредит одобрен / Кредит отклонен.
-Вероятность дефолта (в процентах).
+### 2. Run the Backend Server
 
-📊 Результаты и метрики
-Точность/Precision: 14%
-Полнота/Recall:  67%
+Start the FastAPI application using Uvicorn:
+
+```bash
+uvicorn server:app --reload
+```
+The API will be available at `http://127.0.0.1:8000`. You can view the automatic docs at `http://127.0.0.1:8000/docs`.
+
+### 3. Run the Frontend Application
+
+In a separate terminal, start the Streamlit app:
+
+```bash
+streamlit run app_front.py
+```
+Open the local URL provided (usually `http://localhost:8501`) in your browser.
+
+## 💻 Usage
+
+1.  Enter your details in the Streamlit form:
+    *   **Age**
+    *   **Annual Income** (in thousands)
+    *   **Higher Education** (Checkbox)
+    *   **Stable Job** (Checkbox)
+    *   **Car Ownership** (Checkbox)
+2.  Click **"Submit Application"**.
+3.  The app sends a request to the FastAPI backend.
+4.  **Result**:
+    *   ✅ **Approved**: If the model predicts low risk.
+    *   ℹ️ **Alternative Offer**: If the loan is declined, a debit card offer is shown.
+
+## 📊 Model Metrics
+
+The model was evaluated using Precision and Recall on the test set:
+*   **Precision**: ~14%
+*   **Recall**: ~67%
+
+*Note: The model uses `class_weight='balanced'` to improve recall for the minority class (defaults).*
+
+## 🔌 API Endpoint
+
+**POST** `/score`
+
+Request Body:
+```json
+{
+  "age": 25,
+  "income": 50.0,
+  "education": true,
+  "work": true,
+  "car": false
+}
+```
+
+Response:
+```json
+{
+  "approved": true
+}
+```
+
+## 📝 License
+
+This project is licensed under the Apache-2.0 License.
+```
